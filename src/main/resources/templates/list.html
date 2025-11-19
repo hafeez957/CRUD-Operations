@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<a th:href="@{/form}">New User</a>
+<h1>User Details</h1>
     <table border="1">
         <tr>
             <th>Name</th>
@@ -20,5 +20,7 @@
             <td><a th:href="@{/update/{id}(id=${user.id})}">Edit</a></td>
         </tr>
     </table>
+<br>
+<a th:href="@{/form}">New User</a>
 </body>
 </html>
