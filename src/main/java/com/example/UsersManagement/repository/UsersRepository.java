@@ -1,9 +1,11 @@
 package com.example.UsersManagement.repository;
 
 import com.example.UsersManagement.model.User;
+import jakarta.persistence.EntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,10 +15,12 @@ import java.util.List;
 public class UsersRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
 
-    public UsersRepository(JdbcTemplate jdbcTemplate) {
+    public UsersRepository(JdbcTemplate jdbcTemplate, EntityManager entityManager) {
         this.jdbcTemplate = jdbcTemplate;
+        this.entityManager = entityManager;
     }
 
     // read
@@ -38,9 +42,11 @@ public class UsersRepository {
     };
 
     // insert
+    @Transactional
     public void createUser(User user){
-        String sql="insert into tabl_user(name,email) values (?,?)";
-        jdbcTemplate.update(sql,user.getName(),user.getEmail());
+//        String sql="insert into tabl_user(name,email) values (?,?)";
+//        jdbcTemplate.update(sql,user.getName(),user.getEmail());
+        entityManager.persist(user);
     }
 
     // delete
