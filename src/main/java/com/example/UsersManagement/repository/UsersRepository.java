@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Transactional
 @Repository
 public class UsersRepository {
 
@@ -25,24 +26,25 @@ public class UsersRepository {
 
     // read
     public List<User> findAll(){
-        return jdbcTemplate.query("select * from tabl_user",userRowMapper);
+//        return jdbcTemplate.query("select * from tabl_user",userRowMapper);
+        return entityManager.createQuery("From User",User.class).getResultList();
 
     }
 
-    private RowMapper<User> userRowMapper=new RowMapper<User>() {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-             User user=new User();
-             user.setId(rs.getInt("id"));
-             user.setName(rs.getString("name"));
-             user.setEmail(rs.getString("email"));
-             return user;
-        }
-
-    };
+//    private RowMapper<User> userRowMapper=new RowMapper<User>() {
+//        @Override
+//        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+//             User user=new User();
+//             user.setId(rs.getInt("id"));
+//             user.setName(rs.getString("name"));
+//             user.setEmail(rs.getString("email"));
+//             return user;
+//        }
+//
+//    };
 
     // insert
-    @Transactional
+
     public void createUser(User user){
 //        String sql="insert into tabl_user(name,email) values (?,?)";
 //        jdbcTemplate.update(sql,user.getName(),user.getEmail());
@@ -52,17 +54,22 @@ public class UsersRepository {
     // delete
 
     public void deleteUser(Long id){
-        String sql="delete from tabl_user where id=?";
-        jdbcTemplate.update(sql,id);
+//        String sql="delete from tabl_user where id=?";
+//        jdbcTemplate.update(sql,id);
+        User existingUser = entityManager.find(User.class, id);
+        entityManager.remove(existingUser);
     }
 
     public User update(Long id) {
-        String sql="select * from tabl_user where id=?";
-        return jdbcTemplate.queryForObject(sql,userRowMapper,id);
+//        String sql="select * from tabl_user where id=?";
+//        return jdbcTemplate.queryForObject(sql,userRowMapper,id);
+        return entityManager.find(User.class,id);
     }
 
+
     public void updateUser(User user) {
-        String sql="update tabl_user set name=? , email=? where id=?";
-        jdbcTemplate.update(sql,user.getName(),user.getEmail(),user.getId());
+//        String sql="update tabl_user set name=? , email=? where id=?";
+//        jdbcTemplate.update(sql,user.getName(),user.getEmail(),user.getId());
+        entityManager.merge(user);
     }
 }
